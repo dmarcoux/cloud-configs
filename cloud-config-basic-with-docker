@@ -1,0 +1,23 @@
+#cloud-config
+groups:
+  - docker
+users:
+  - name: dany
+    groups: docker
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDUwJdHmZu1Cz8kLQTGtKxpzneRJw3p0wskhRi+wUtRx3of3Hakcceiw8n6N6UJQ7vpe9MoJv/e9IkdZyp5/QvHEdI/ZrrLkWc+WzFuC1nDMuu0yiV7TLEn1E63EQDgZCrsPgqOElYm51+zL4sL3ISMF7yedi2zdZNAI/kBVWaurxy2Szkw/0c+KfT8N+YO1FKJLTo9KP8hs2I7x7SUrIsPMLDYSvS//i4O9/HCZgj43StYDxfgAIgWAeD1Q5gHrjlFdmueESFeXGBDNLJwJE8LUrMUqgg9+smwt3nH/NW+klQmWzy0y9dpb5sbfHSz2PnoE3aCTNCAaFQe14oE+cN2xPyvG0Uueeg3fIFJvTZMGJB9G+g1IG2PeYo6UvarxcfUDiwEYhw9gZG9nS7+gZGnbcuezIeq7xzrW5jLnCaCI/R7vHK3yN0/8VerX7VU3CXcmMGldsaKd0QxDk1aArVqLNR+tgYpAj2MIFOprYz0oNUOKrqSlfmyVQOIbeqcnTa+IhV7uP+hjuwO6HFbkn3im6n7BGVX7aTTe/RGQBbbR9qad6Of3bRJJe0ukLwti3R4Vtx8RJ1vZ5v/k4rTHM24AzlXd6QtP3KHZ1PPJcT9nFQtQ8gcCPrP2ACXo6p9KGH5caIBAy8dDWFWgwtsvQbDsbogOOQLh4Gbtm5ymIgOcw== danymarcoux@gmail.com
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+disable_root: true
+package_update: true
+package_upgrade: true
+package_reboot_if_required: true
+packages:
+  - fail2ban
+  - docker.io
+runcmd:
+  - sed --in-place --regexp-extended "s/#?PermitRootLogin .*/PermitRootLogin no/" /etc/ssh/sshd_config
+  - sed --in-place --regexp-extended "s/#?PasswordAuthentication .*/PasswordAuthentication no/" /etc/ssh/sshd_config
+  - cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+  - systemctl enable --now fail2ban
+  - systemctl enable --now containerd
