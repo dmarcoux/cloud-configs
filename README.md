@@ -4,8 +4,8 @@ Cloud-config files to initialize servers with cloud-init.
 
 ### Server Setup On Hetzner
 
-*Ubuntu 20.04* is officially supported by *Hetzner*.
+Use *Ubuntu 22.04*, it is officially supported by *Hetzner*.
 
-Create a server and copy the `cloud-init` config in the `User data` field.
+While creating a server in the web UI, copy the `cloud-init` config in the field under `Cloud config`.
 
 SSH into the server with `ssh user@server_ip`.
